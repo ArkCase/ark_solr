@@ -1,5 +1,1 @@
-FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/hello-world:latest
-
-RUN yum update
-
-# test change
+FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/base_centos:7-20210630
