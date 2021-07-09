@@ -1,1 +1,32 @@
-FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/base_centos:7-20210630
+FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/centos/base-image:java8
+
+ENV SOLR_VERSION 7.7.2
+
+ENV SOLR_URL https://archive.apache.org/dist/lucene/solr/$SOLR_VERSION/solr-$SOLR_VERSION.tgz
+
+ENV SOLR_PORT 8983
+
+ADD $SOLR_URL /tmp
+
+RUN useradd -M solr && \
+    cd /tmp && \
+    yum install lsof -y && \
+    tar -xzf solr-$SOLR_VERSION.tgz -C /opt && \
+    rm solr-$SOLR_VERSION.tgz && \
+    cd /opt && \
+    mv solr-$SOLR_VERSION solr && \
+    chown -R solr:solr /opt/solr && \
+    rm -f /opt/solr/server/solr/configsets/_default/conf/managed-schema  
+
+ENV PATH=/opt/solr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+USER solr
+
+EXPOSE $SOLR_PORT
+
+WORKDIR /opt/solr
+
+CMD [ "solr","start","-f" ]
+
+
+
