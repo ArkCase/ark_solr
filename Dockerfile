@@ -1,4 +1,4 @@
-FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/centos/base-image:java8
+FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_base_java8:latest
 
 ENV SOLR_VERSION 7.7.2
 
@@ -8,7 +8,7 @@ ENV SOLR_PORT 8983
 
 ADD $SOLR_URL /tmp
 
-RUN useradd -M solr && \
+RUN useradd  --system --user-group solr && \
     cd /tmp && \
     yum install lsof -y && \
     tar -xzf solr-$SOLR_VERSION.tgz -C /opt && \
@@ -27,6 +27,3 @@ EXPOSE $SOLR_PORT
 WORKDIR /opt/solr
 
 CMD [ "solr","start","-f" ]
-
-
-
