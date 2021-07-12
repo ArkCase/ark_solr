@@ -8,15 +8,18 @@ ENV SOLR_PORT 8983
 
 ADD $SOLR_URL /tmp
 
+
 RUN useradd  --system --user-group solr && \
     cd /tmp && \
+    #install lsof dependency
     yum install lsof -y && \
     tar -xzf solr-$SOLR_VERSION.tgz -C /opt && \
     rm solr-$SOLR_VERSION.tgz && \
     cd /opt && \
     mv solr-$SOLR_VERSION solr && \
     chown -R solr:solr /opt/solr && \
-    rm -f /opt/solr/server/solr/configsets/_default/conf/managed-schema  
+    rm -f /opt/solr/server/solr/configsets/_default/conf/managed-schema /opt/solr/*.txt && \
+    rm -rf /opt/solr/example /opt/solr/docs 
 
 ENV PATH=/opt/solr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
