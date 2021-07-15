@@ -6,8 +6,8 @@ LABEL ORG="Armedia LLC" \
       MAINTAINER="Armedia LLC"
 
 ENV SOLR_VERSION="7.7.2" \
-    SOLR_USER="solr" \
-    SOLR_GROUP="solr"
+    SOLR_USER="solr" 
+    
 
 ENV SOLR_DOWNLOAD_URL https://archive.apache.org/dist/lucene/solr/${SOLR_VERSION}/solr-${SOLR_VERSION}.tgz
 ENV SOLR_PORT 8983
@@ -23,7 +23,7 @@ RUN useradd  --system --user-group $SOLR_USER  && \
     rm solr-$SOLR_VERSION.tgz && \
     cd /opt && \
     mv solr-$SOLR_VERSION solr && \
-    chown -R solr:solr /opt/solr && \
+    chown -R $SOLR_USER:$SOLR_USER /opt/solr && \
     rm -f /opt/solr/server/solr/configsets/_default/conf/managed-schema /opt/solr/*.txt && \
     rm -Rf /opt/solr/example /opt/solr/docs 
 
