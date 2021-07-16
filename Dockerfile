@@ -17,7 +17,7 @@ ADD $SOLR_DOWNLOAD_URL /tmp
 
 RUN useradd  --system --user-group $SOLR_USER  && \
     cd /tmp && \
-    #install lsof dependency
+    #install lsof dependency as does ansible installer
     yum install lsof -y && \
     tar -xzf solr-$SOLR_VERSION.tgz -C /opt && \
     rm solr-$SOLR_VERSION.tgz && \
