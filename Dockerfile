@@ -7,10 +7,9 @@ LABEL ORG="Armedia LLC" \
 
 ENV SOLR_VERSION="7.7.2" \
     SOLR_USER="solr" \
-    SOLR_DOWNLOAD_URL="https://archive.apache.org/dist/lucene/solr/${SOLR_VERSION}/solr-${SOLR_VERSION}.tgz" \
     SOLR_PORT="8983"
 
-ADD $SOLR_DOWNLOAD_URL /tmp
+ADD https://archive.apache.org/dist/lucene/solr/${SOLR_VERSION}/solr-${SOLR_VERSION}.tgz /tmp
 
 
 RUN useradd  --system --user-group $SOLR_USER  && \
