@@ -5,11 +5,13 @@ LABEL ORG="Armedia LLC" \
       IMAGE_SOURCE="https://github.com/ArkCase/ark_solr" \
       MAINTAINER="Armedia LLC"
 
+ARG RESOURCE_PATH="artifacts" 
+
 ENV SOLR_VERSION="7.7.2" \
     SOLR_USER="solr" \
     SOLR_PORT="8983"
 
-ADD https://archive.apache.org/dist/lucene/solr/${SOLR_VERSION}/solr-${SOLR_VERSION}.tgz /tmp
+ADD ${RESOURCE_PATH}/solr-${SOLR_VERSION}.tgz /tmp
 
 
 RUN useradd  --system --user-group $SOLR_USER  && \
