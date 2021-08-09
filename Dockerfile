@@ -17,11 +17,9 @@ ADD ${RESOURCE_PATH}/solr-${SOLR_VERSION}.tgz /tmp
 RUN useradd  --system --user-group $SOLR_USER  && \
     cd /tmp && \
     #install lsof dependency as does ansible installer
-    yum install lsof -y && \
-    tar -xzf solr-$SOLR_VERSION.tgz -C /opt && \
-    rm solr-$SOLR_VERSION.tgz && \
+    yum install lsof -y  &&\
+    mv solr-$SOLR_VERSION  /opt/solr && \
     cd /opt && \
-    mv solr-$SOLR_VERSION solr && \
     chown -R $SOLR_USER:$SOLR_USER /opt/solr && \
     rm -f /opt/solr/server/solr/configsets/_default/conf/managed-schema /opt/solr/*.txt && \
     rm -Rf /opt/solr/example /opt/solr/docs 
