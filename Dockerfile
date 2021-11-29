@@ -9,7 +9,8 @@ ARG RESOURCE_PATH="artifacts"
 
 ENV SOLR_VERSION="7.7.2" \
     SOLR_USER="solr" \
-    SOLR_PORT="8983"
+    SOLR_PORT="8983" \
+    SOLR_OPTS="-Dpdfbox.fontcache=/tmp"
 
 ADD ${RESOURCE_PATH}/solr-${SOLR_VERSION}.tgz /tmp
 
