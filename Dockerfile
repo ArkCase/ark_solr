@@ -16,8 +16,6 @@ ENV JAVA_HOME=/usr/lib/jvm/java \
 RUN yum update -y && \
     yum -y install java-11-openjdk-devel-${JAVA_VERSION} unzip && \
     $JAVA_HOME/bin/javac -version
-
-#ARG RESOURCE_PATH="artifacts" 
 #Solr
 ARG SOLR_VERSION="8.11.1"
 
@@ -39,7 +37,6 @@ RUN set -ex;\
     mv solr-${SOLR_VERSION} solr;\
     rm solr-${SOLR_VERSION}.tgz;\
     rm -f /opt/solr/server/solr/configsets/_default/conf/managed-schema /opt/solr/*.txt ;\
-    #rm -Rf /opt/solr/example /opt/solr/docs ;\
     chown -R ${SOLR_USER}:${SOLR_USER} /opt/solr
 USER solr
 
