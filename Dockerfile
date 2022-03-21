@@ -1,10 +1,10 @@
 FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_base:latest
 
-LABEL ORG="Armedia LLC" \
+LABEL ORG="ArkCase LLC" \
       APP="solr" \
       VERSION="1.0" \
       IMAGE_SOURCE="https://github.com/ArkCase/ark_solr" \
-      MAINTAINER="Armedia LLC"
+      MAINTAINER="ArkCase LLC"
 #################
 # Build JDK
 #################
