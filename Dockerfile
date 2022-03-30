@@ -42,7 +42,6 @@ RUN set -ex;\
     tar -xzvf solr-${SOLR_VERSION}.tgz;\
     mv solr-${SOLR_VERSION} solr;\
     rm solr-${SOLR_VERSION}.tgz;\
-    rm -f /opt/solr/server/solr/configsets/_default/conf/managed-schema /opt/solr/*.txt ;\
     chown -R ${SOLR_USER}:${SOLR_USER} /opt/solr;\
     yum clean all 
 
