@@ -1,4 +1,21 @@
+###########################################################################################################
+#
+# How to build:
+#
+# docker build -t 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_solr:latest .
+# docker push 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_solr:latest
+#
+# How to run: (Helm)
+#
+# helm repo add arkcase https://arkcase.github.io/ark_helm_charts/
+# helm install ark-solr arkcase/ark-solr
+# helm uninstall ark-solr
+#
+###########################################################################################################
+
 FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_base:latest
+RUN yum -y install java-11-openjdk
+ENV JAVA_HOME=/usr/lib/jvm/jre-11-openjdk
 
 LABEL ORG="ArkCase LLC" \
       APP="solr" \
@@ -8,21 +25,21 @@ LABEL ORG="ArkCase LLC" \
 #################
 # Build JDK
 #################
-ARG JAVA_VERSION="11.0.12.0.7-0.el7_9"
+#ARG JAVA_VERSION="11.0.12.0.7-0.el7_9"
 
-ENV JAVA_HOME=/usr/lib/jvm/java \
-    LANG=en_US.UTF-8 \
-    LANGUAGE=en_US:en \
-    LC_ALL=en_US.UTF-8 \
-    SOLR_OPTS="-Dpdfbox.fontcache=/tmp"
+#ENV JAVA_HOME=/usr/lib/jvm/java \
+#    LANG=en_US.UTF-8 \
+#    LANGUAGE=en_US:en \
+#    LC_ALL=en_US.UTF-8 \
+#    SOLR_OPTS="-Dpdfbox.fontcache=/tmp"
 
-RUN yum update -y && \
-    yum -y install java-11-openjdk-devel-${JAVA_VERSION} unzip && \
-    $JAVA_HOME/bin/javac -version
+#RUN yum update -y && \
+#    yum -y install java-11-openjdk-devel-${JAVA_VERSION} unzip && \
+#    $JAVA_HOME/bin/javac -version
 #################
 # Build Solr
 #################
-ARG SOLR_VERSION="8.11.1"
+ARG SOLR_VERSION="8.11.2"
 
 ENV SOLR_USERID=2000 \
     SOLR_GROUPID=2020 \
