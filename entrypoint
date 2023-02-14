@@ -1,0 +1,40 @@
+#!/bin/bash
+
+timestamp() {
+	/usr/bin/date -Isec -u
+}
+
+say() {
+	echo -e "$(timestamp): ${@}"
+}
+
+fail() {
+	say "${@}" 1>&2
+	exit ${EXIT_CODE:-1}
+}
+
+set -euo pipefail
+
+INIT_FLAG="${DATA_DIR}/.initialized"
+if [ -f "${DATA_DIR}/.initialized" ] ; then
+	say "Persistence is already initialized, proceeding with the normal boot"
+else
+	say "Persistence has not been initialized, proceeding with the first-time initialization"
+	if [ -d "${INIT_DIR}" ] ; then
+		set -euo pipefail
+		cd "${INIT_DIR}"
+		(
+			while read script ; do
+				# Run the script
+				say "\tInitializing from script [${script}]..."
+				"${script}" || exit 1
+			done < <(/usr/bin/find . -mindepth 1 -maxdepth 1 -type f -name '*.sh' | sort)
+		) || fail "Initialization failed"
+	fi
+	say "Initialization complete"
+	timestamp > "${INIT_FLAG}"
+fi
+
+[ ${#} -ge 1 ] || set -- start -f -cloud
+say "Launching Solr with flags: ${@@Q}"
+exec "${HOME_DIR}/bin/solr" "${@}"

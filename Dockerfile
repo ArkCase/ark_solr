@@ -13,57 +13,93 @@
 #
 ###########################################################################################################
 
+ARG ARCH="amd64"
+ARG OS="linux"
+ARG PKG="solr"
+ARG VER="8.11.2"
+ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
+
 FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_base:latest
-RUN yum -y install java-11-openjdk
-ENV JAVA_HOME=/usr/lib/jvm/jre-11-openjdk
+
+ARG ARCH
+ARG OS
+ARG PKG
+ARG VER
+ARG SRC
+ARG APP_UID="2000"
+ARG APP_GID="${APP_UID}"
+ARG APP_USER="${PKG}"
+ARG APP_GROUP="${APP_USER}"
+ARG BASE_DIR="/app"
+ARG HOME_DIR="${BASE_DIR}/${PKG}"
+ARG DATA_DIR="${BASE_DIR}/data"
+ARG INIT_DIR="${BASE_DIR}/init"
+
+RUN yum -y update && \
+    yum -y install \
+        java-11-openjdk \
+        lsof \
+    && \
+    yum -y clean all
 
 LABEL ORG="ArkCase LLC" \
+      MAINTAINER="Armedia Devops Team <devops@armedia.com>" \
       APP="solr" \
-      VERSION="1.0" \
-      IMAGE_SOURCE="https://github.com/ArkCase/ark_solr" \
-      MAINTAINER="ArkCase LLC"
-#################
-# Build JDK
-#################
-#ARG JAVA_VERSION="11.0.12.0.7-0.el7_9"
+      VERSION="${VER}" \
+      IMAGE_SOURCE="https://github.com/ArkCase/ark_solr"
 
-#ENV JAVA_HOME=/usr/lib/jvm/java \
-#    LANG=en_US.UTF-8 \
-#    LANGUAGE=en_US:en \
-#    LC_ALL=en_US.UTF-8 \
-#    SOLR_OPTS="-Dpdfbox.fontcache=/tmp"
+ENV APP_UID="${APP_UID}" \
+    APP_GID="${APP_GID}" \
+    APP_USER="${APP_USER}" \
+    APP_GROUP="${APP_GROUP}" \
+    JAVA_HOME="/usr/lib/jvm/jre" \
+    LANG="en_US.UTF-8" \
+    LANGUAGE="en_US:en" \
+    LC_ALL="en_US.UTF-8" \
+    BASE_DIR="${BASE_DIR}" \
+    DATA_DIR="${DATA_DIR}" \
+    HOME_DIR="${HOME_DIR}" \
+    INIT_DIR="${INIT_DIR}" \
+    PATH="${HOME_DIR}/bin:${PATH}"
 
-#RUN yum update -y && \
-#    yum -y install java-11-openjdk-devel-${JAVA_VERSION} unzip && \
-#    $JAVA_HOME/bin/javac -version
+WORKDIR "${BASE_DIR}"
+
+RUN groupadd --system --gid "${APP_GID}" "${APP_GROUP}" && \
+    useradd  --system --uid "${APP_UID}" --gid "${APP_GROUP}" --create-home --home-dir "${HOME_DIR}" "${APP_USER}"
+
 #################
 # Build Solr
 #################
-ARG SOLR_VERSION="8.11.2"
 
-ENV SOLR_USERID=2000 \
-    SOLR_GROUPID=2020 \
-    SOLR_GROUPNAME=solr \
-    SOLR_USER=solr \
-    SOLR_PORT=8983 \
-    PATH=/opt/solr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
-    SOLR_URL="https://apache.org/dist/lucene/solr/${SOLR_VERSION}/solr-${SOLR_VERSION}.tgz"
-RUN groupadd -g ${SOLR_GROUPID} ${SOLR_GROUPNAME} && \
-    useradd -u ${SOLR_USERID} -g ${SOLR_GROUPNAME} ${SOLR_USER} &&\
-    yum install -y lsof
-WORKDIR /opt
-ADD ${SOLR_URL} /opt/
+WORKDIR "${BASE_DIR}"
 
-RUN set -ex;\
-    yum update -y;\
-    tar -xzvf solr-${SOLR_VERSION}.tgz;\
-    mv solr-${SOLR_VERSION} solr;\
-    rm solr-${SOLR_VERSION}.tgz;\
-    chown -R ${SOLR_USER}:${SOLR_USER} /opt/solr;\
-    yum clean all 
+RUN curl -o solr.tar.gz "${SRC}" && \
+    tar -xzvf solr.tar.gz && \
+    mv "solr-${VER}"/* "${HOME_DIR}" && \
+    rmdir "solr-${VER}" && \
+    rm -f solr.tar.gz && \
+    chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}"
 
-USER solr
+#################
+# Configure Solr
+#################
 
-EXPOSE $SOLR_PORT
+ENV SOLR_DATA_HOME="${DATA_DIR}/instances" \
+    SOLR_LOGS_DIR="${DATA_DIR}/logs"
 
-CMD [ "solr","start","-f","-cloud" ]
+RUN mkdir -p "${DATA_DIR}" "${INIT_DIR}" "${SOLR_DATA_HOME}" "${SOLR_LOGS_DIR}" && \
+    chown -R "${APP_USER}:${APP_GROUP}" "${DATA_DIR}" && \
+    chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}" && \
+    chmod -R a+rX "${INIT_DIR}"
+
+COPY "entrypoint" /
+
+USER "${APP_USER}"
+WORKDIR "${HOME_DIR}"
+
+EXPOSE 8983
+
+VOLUME [ "${DATA_DIR}" ]
+VOLUME [ "${INIT_DIR}" ]
+
+ENTRYPOINT [ "/entrypoint" ]
