@@ -37,7 +37,7 @@ ARG INIT_DIR="${BASE_DIR}/init"
 
 RUN yum -y update && \
     yum -y install \
-        java-11-openjdk \
+        java-11-openjdk-devel \
         lsof \
     && \
     yum -y clean all
@@ -52,7 +52,7 @@ ENV APP_UID="${APP_UID}" \
     APP_GID="${APP_GID}" \
     APP_USER="${APP_USER}" \
     APP_GROUP="${APP_GROUP}" \
-    JAVA_HOME="/usr/lib/jvm/jre" \
+    JAVA_HOME="/usr/lib/jvm/java" \
     LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
     LC_ALL="en_US.UTF-8" \
@@ -84,13 +84,16 @@ RUN curl -o solr.tar.gz "${SRC}" && \
 # Configure Solr
 #################
 
-ENV SOLR_DATA_HOME="${DATA_DIR}/instances" \
-    SOLR_LOGS_DIR="${DATA_DIR}/logs"
+ENV SOLR_HOME="${DATA_DIR}/solr" \
+    SOLR_LOGS_DIR="${DATA_DIR}/logs" \
+    CONF_DIR="${HOME_DIR}/server/solr/configsets"
 
-RUN mkdir -p "${DATA_DIR}" "${INIT_DIR}" "${SOLR_DATA_HOME}" "${SOLR_LOGS_DIR}" && \
+RUN mkdir -p "${DATA_DIR}" "${INIT_DIR}" "${SOLR_LOGS_DIR}" && \
     chown -R "${APP_USER}:${APP_GROUP}" "${DATA_DIR}" && \
     chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}" && \
     chmod -R a+rX "${INIT_DIR}"
+
+RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
 
 COPY "entrypoint" /
 
