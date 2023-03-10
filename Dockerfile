@@ -18,8 +18,11 @@ ARG OS="linux"
 ARG PKG="solr"
 ARG VER="8.11.2"
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
+ARG BASE_REGISTRY
+ARG BASE_REPO="arkcase/base"
+ARG BASE_TAG="8.7.0"
 
-FROM 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_base:latest
+FROM "${BASE_REGISTRY}/${BASE_REPO}:${BASE_TAG}"
 
 ARG ARCH
 ARG OS
