@@ -36,6 +36,7 @@ ARG APP_GROUP="${APP_USER}"
 ARG BASE_DIR="/app"
 ARG HOME_DIR="${BASE_DIR}/${PKG}"
 ARG DATA_DIR="${BASE_DIR}/data"
+ARG LOGS_DIR="${DATA_DIR}/logs"
 
 RUN yum -y update && \
     yum -y install \
@@ -61,7 +62,8 @@ ENV APP_UID="${APP_UID}" \
     BASE_DIR="${BASE_DIR}" \
     DATA_DIR="${DATA_DIR}" \
     HOME_DIR="${HOME_DIR}" \
-    PATH="${HOME_DIR}/bin:${PATH}"
+    PATH="${HOME_DIR}/bin:${PATH}" \
+    SOLR_LOGS_DIR="${LOGS_DIR}"
 
 WORKDIR "${BASE_DIR}"
 
@@ -79,17 +81,15 @@ RUN curl -o solr.tar.gz "${SRC}" && \
     mv "solr-${VER}"/* "${HOME_DIR}" && \
     rmdir "solr-${VER}" && \
     rm -f solr.tar.gz && \
-    chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}"
+    mkdir -p "${DATA_DIR}/logs" && \
+    chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}" "${DATA_DIR}" && \
+    chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}"
 
 #################
 # Configure Solr
 #################
 
 ENV CONF_DIR="${HOME_DIR}/server/solr/configsets"
-
-RUN mkdir -p "${DATA_DIR}" && \
-    chown -R "${APP_USER}:${APP_GROUP}" "${DATA_DIR}" && \
-    chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}"
 
 RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
 
