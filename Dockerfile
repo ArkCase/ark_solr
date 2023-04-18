@@ -2,8 +2,7 @@
 #
 # How to build:
 #
-# docker build -t 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_solr:latest .
-# docker push 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_solr:latest
+# docker build -t arkcase/solr:latest .
 #
 # How to run: (Helm)
 #
@@ -13,16 +12,16 @@
 #
 ###########################################################################################################
 
+ARG PUBLIC_REGISTRY="public.ecr.aws"
+ARG BASE_REPO="arkcase/base"
+ARG BASE_TAG="8.7.0"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
 ARG VER="8.11.2"
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
-ARG BASE_REGISTRY
-ARG BASE_REPO="arkcase/base"
-ARG BASE_TAG="8.7.0"
 
-FROM "${BASE_REGISTRY}/${BASE_REPO}:${BASE_TAG}"
+FROM "${PUBLIC_REGISTRY}/${BASE_REPO}:${BASE_TAG}"
 
 ARG ARCH
 ARG OS
