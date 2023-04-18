@@ -1,10 +1,14 @@
-# ark_solr
+# Solr for Arkcase
+
+Solr is a standalone enterprise search server with a REST-like API. You put documents in it (called "indexing") via JSON, XML, CSV or binary over HTTP. You query it via HTTP GET and receive JSON, XML, CSV or binary results.
+
+Solr Documentation is available at https://solr.apache.org/
 
 ## How to build:
 
-docker build -t 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_solr:latest .
+docker build -t ark_solr:latest .
 
-docker push 345280441424.dkr.ecr.ap-south-1.amazonaws.com/ark_solr:latest
+Repository pushes occur automatically when code is checked in.
 
 ## How to run: (Helm)
 
