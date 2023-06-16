@@ -40,6 +40,7 @@ ARG LOGS_DIR="${DATA_DIR}/logs"
 RUN yum -y update && \
     yum -y install \
         java-11-openjdk-devel \
+        jq \
         lsof \
     && \
     yum -y clean all
