@@ -14,11 +14,12 @@
 
 ARG PUBLIC_REGISTRY="public.ecr.aws"
 ARG BASE_REPO="arkcase/base"
-ARG BASE_TAG="8.7.0"
+ARG BASE_TAG="8.8-01"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
 ARG VER="8.11.2"
+ARG BLD="01"
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
 
 FROM "${PUBLIC_REGISTRY}/${BASE_REPO}:${BASE_TAG}"
