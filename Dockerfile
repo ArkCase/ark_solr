@@ -38,8 +38,7 @@ ARG HOME_DIR="${BASE_DIR}/${PKG}"
 ARG DATA_DIR="${BASE_DIR}/data"
 ARG LOGS_DIR="${DATA_DIR}/logs"
 
-RUN yum -y update && \
-    yum -y install \
+RUN yum -y install \
         java-11-openjdk-devel \
         jq \
         lsof \
