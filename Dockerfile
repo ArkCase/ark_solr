@@ -14,12 +14,12 @@
 
 ARG PUBLIC_REGISTRY="public.ecr.aws"
 ARG BASE_REPO="arkcase/base"
-ARG BASE_TAG="8.8-02"
+ARG BASE_TAG="8-01"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
 ARG VER="8.11.2"
-ARG BLD="02"
+ARG BLD="03"
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
 
 FROM "${PUBLIC_REGISTRY}/${BASE_REPO}:${BASE_TAG}"
@@ -76,6 +76,7 @@ RUN groupadd --system --gid "${APP_GID}" "${APP_GROUP}" && \
 
 WORKDIR "${BASE_DIR}"
 
+COPY --chown=root:root "deploy-configs" "/usr/local/bin"
 RUN curl -o solr.tar.gz "${SRC}" && \
     tar -xzvf solr.tar.gz && \
     mv "solr-${VER}"/* "${HOME_DIR}" && \
@@ -83,7 +84,8 @@ RUN curl -o solr.tar.gz "${SRC}" && \
     rm -f solr.tar.gz && \
     mkdir -p "${DATA_DIR}/logs" && \
     chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}" "${DATA_DIR}" && \
-    chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}"
+    chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}" && \
+    chmod -R ug=rX,o= "/usr/local/bin/deploy-configs"
 
 #################
 # Configure Solr
