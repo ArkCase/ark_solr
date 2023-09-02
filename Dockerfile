@@ -21,6 +21,8 @@ ARG PKG="solr"
 ARG VER="8.11.2"
 ARG BLD="03"
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
+ARG CW_VER="1.4.5"
+ARG CW_SRC="https://project.armedia.com/nexus/repository/arkcase/com/armedia/acm/curator-wrapper/${CW_VER}/curator-wrapper-${CW_VER}-exe.jar"
 
 FROM "${PUBLIC_REGISTRY}/${BASE_REPO}:${BASE_TAG}"
 
@@ -29,6 +31,7 @@ ARG OS
 ARG PKG
 ARG VER
 ARG SRC
+ARG CW_SRC
 ARG APP_UID="2000"
 ARG APP_GID="${APP_UID}"
 ARG APP_USER="${PKG}"
@@ -94,6 +97,9 @@ RUN curl -o solr.tar.gz "${SRC}" && \
 ENV CONF_DIR="${HOME_DIR}/server/solr/configsets"
 
 RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
+
+# Install the curator wrapper
+RUN curl -L --fail -o "/usr/local/bin/curator-wrapper.jar" "${CW_SRC}"
 
 USER "${APP_USER}"
 WORKDIR "${HOME_DIR}"
