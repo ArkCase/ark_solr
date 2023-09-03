@@ -79,16 +79,13 @@ RUN groupadd --system --gid "${APP_GID}" "${APP_GROUP}" && \
 
 WORKDIR "${BASE_DIR}"
 
-COPY --chown=root:root "deploy-configs" "/usr/local/bin"
-RUN curl -o solr.tar.gz "${SRC}" && \
-    tar -xzvf solr.tar.gz && \
+COPY --chown=root:root "/usr/local/bin"
+RUN curl "${SRC}" | tar -xzvf - && \
     mv "solr-${VER}"/* "${HOME_DIR}" && \
     rmdir "solr-${VER}" && \
-    rm -f solr.tar.gz && \
     mkdir -p "${DATA_DIR}/logs" && \
     chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}" "${DATA_DIR}" && \
-    chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}" && \
-    chmod -R ug=rX,o= "/usr/local/bin/deploy-configs"
+    chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}"
 
 #################
 # Configure Solr
