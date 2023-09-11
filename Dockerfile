@@ -79,7 +79,6 @@ RUN groupadd --system --gid "${APP_GID}" "${APP_GROUP}" && \
 
 WORKDIR "${BASE_DIR}"
 
-COPY --chown=root:root "/usr/local/bin"
 RUN curl "${SRC}" | tar -xzvf - && \
     mv "solr-${VER}"/* "${HOME_DIR}" && \
     rmdir "solr-${VER}" && \
