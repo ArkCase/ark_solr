@@ -13,18 +13,20 @@
 ###########################################################################################################
 
 ARG PUBLIC_REGISTRY="public.ecr.aws"
-ARG BASE_REPO="arkcase/base"
-ARG BASE_TAG="8-02"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
 ARG VER="8.11.2"
-ARG BLD="03"
+
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
 ARG CW_VER="1.4.5"
 ARG CW_SRC="https://project.armedia.com/nexus/repository/arkcase/com/armedia/acm/curator-wrapper/${CW_VER}/curator-wrapper-${CW_VER}-exe.jar"
 
-FROM "${PUBLIC_REGISTRY}/${BASE_REPO}:${BASE_TAG}"
+ARG BASE_REPO="arkcase/base"
+ARG BASE_VER="8"
+ARG BASE_IMG="${PUBLIC_REGISTRY}/${BASE_REPO}:${BASE_VER}"
+
+FROM "${BASE_IMG}"
 
 ARG ARCH
 ARG OS
