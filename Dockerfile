@@ -21,6 +21,18 @@ ARG VER="8.11.2"
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
 ARG CW_VER="1.4.5"
 ARG CW_SRC="https://project.armedia.com/nexus/repository/arkcase/com/armedia/acm/curator-wrapper/${CW_VER}/curator-wrapper-${CW_VER}-exe.jar"
+ARG MARIADB_DRIVER="3.1.2"
+ARG MARIADB_DRIVER_URL="https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/${MARIADB_DRIVER}/mariadb-java-client-${MARIADB_DRIVER}.jar"
+ARG MSSQL_DRIVER="12.2.0.jre11"
+ARG MSSQL_DRIVER_URL="https://repo1.maven.org/maven2/com/microsoft/sqlserver/mssql-jdbc/${MSSQL_DRIVER}/mssql-jdbc-${MSSQL_DRIVER}.jar"
+ARG MYSQL_DRIVER="8.0.32"
+ARG MYSQL_DRIVER_URL="https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/${MYSQL_DRIVER}/mysql-connector-j-${MYSQL_DRIVER}.jar"
+ARG MYSQL_LEGACY_DRIVER="1.0.0"
+ARG MYSQL_LEGACY_DRIVER_URL="https://project.armedia.com/nexus/repository/arkcase/com/armedia/mysql/mysql-legacy-driver/${MYSQL_LEGACY_DRIVER}/mysql-legacy-driver-${MYSQL_LEGACY_DRIVER}.jar"
+ARG ORACLE_DRIVER="21.9.0.0"
+ARG ORACLE_DRIVER_URL="https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/${ORACLE_DRIVER}/ojdbc11-${ORACLE_DRIVER}.jar"
+ARG POSTGRES_DRIVER="42.5.4"
+ARG POSTGRES_DRIVER_URL="https://repo1.maven.org/maven2/org/postgresql/postgresql/${POSTGRES_DRIVER}/postgresql-${POSTGRES_DRIVER}.jar"
 
 ARG BASE_REPO="arkcase/base"
 ARG BASE_VER="8"
@@ -42,6 +54,22 @@ ARG BASE_DIR="/app"
 ARG HOME_DIR="${BASE_DIR}/${PKG}"
 ARG DATA_DIR="${BASE_DIR}/data"
 ARG LOGS_DIR="${DATA_DIR}/logs"
+ARG SERVER_DIR="${HOME_DIR}/server"
+ARG WEBAPP_DIR="${SERVER_DIR}/solr-webapp/webapp"
+ARG WEBAPP_LIBS_DIR="${WEBAPP_DIR}/WEB-INF/lib"
+
+ARG MARIADB_DRIVER
+ARG MARIADB_DRIVER_URL
+ARG MSSQL_DRIVER
+ARG MSSQL_DRIVER_URL
+ARG MYSQL_DRIVER
+ARG MYSQL_DRIVER_URL
+ARG MYSQL_LEGACY_DRIVER
+ARG MYSQL_LEGACY_DRIVER_URL
+ARG ORACLE_DRIVER
+ARG ORACLE_DRIVER_URL
+ARG POSTGRES_DRIVER
+ARG POSTGRES_DRIVER_URL
 
 RUN yum -y install \
         java-11-openjdk-devel \
@@ -68,7 +96,10 @@ ENV APP_UID="${APP_UID}" \
     DATA_DIR="${DATA_DIR}" \
     HOME_DIR="${HOME_DIR}" \
     PATH="${HOME_DIR}/bin:${PATH}" \
-    SOLR_LOGS_DIR="${LOGS_DIR}"
+    SOLR_LOGS_DIR="${LOGS_DIR}" \
+    SERVER_DIR="${SERVER_DIR}" \
+    WEBAPP_DIR="${WEBAPP_DIR}" \
+    WEBAPP_LIBS_DIR="${WEBAPP_LIBS_DIR}"
 
 WORKDIR "${BASE_DIR}"
 
@@ -85,6 +116,12 @@ RUN curl "${SRC}" | tar -xzvf - && \
     mv "solr-${VER}"/* "${HOME_DIR}" && \
     rmdir "solr-${VER}" && \
     mkdir -p "${DATA_DIR}/logs" && \
+    curl -L --fail "${MYSQL_DRIVER_URL}" -o "${WEBAPP_LIBS_DIR}/mysql-connector-j-${MYSQL_DRIVER}.jar" && \
+    curl -L --fail "${MYSQL_LEGACY_DRIVER_URL}" -o "${WEBAPP_LIBS_DIR}/mysql-legacy-driver-${MYSQL_LEGACY_DRIVER}.jar" && \
+    curl -L --fail "${MARIADB_DRIVER_URL}" -o "${WEBAPP_LIBS_DIR}/mariadb-java-client-${MARIADB_DRIVER}.jar" && \
+    curl -L --fail "${MSSQL_DRIVER_URL}" -o "${WEBAPP_LIBS_DIR}/mssql-jdbc-${MSSQL_DRIVER}.jar" && \
+    curl -L --fail "${ORACLE_DRIVER_URL}" -o "${WEBAPP_LIBS_DIR}/ojdbc11-${ORACLE_DRIVER}.jar" && \
+    curl -L --fail "${POSTGRES_DRIVER_URL}" -o "${WEBAPP_LIBS_DIR}/postgresql-${POSTGRES_DRIVER}.jar" && \
     chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}" "${DATA_DIR}" && \
     chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}"
 
@@ -92,7 +129,7 @@ RUN curl "${SRC}" | tar -xzvf - && \
 # Configure Solr
 #################
 
-ENV CONF_DIR="${HOME_DIR}/server/solr/configsets"
+ENV CONF_DIR="${SERVER_DIR}/solr/configsets"
 
 RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
 
