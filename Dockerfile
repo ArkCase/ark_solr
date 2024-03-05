@@ -16,7 +16,7 @@ ARG PUBLIC_REGISTRY="public.ecr.aws"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
-ARG VER="8.11.2"
+ARG VER="8.11.3"
 
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
 ARG CW_VER="1.4.5"
