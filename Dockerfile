@@ -19,7 +19,7 @@ ARG PKG="solr"
 ARG VER="8.11.3"
 
 ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
-ARG CW_VER="1.4.6"
+ARG CW_VER="1.5.0"
 ARG CW_SRC="https://nexus.armedia.com/repository/arkcase/com/armedia/acm/curator-wrapper/${CW_VER}/curator-wrapper-${CW_VER}-exe.jar"
 ARG MARIADB_DRIVER="3.1.2"
 ARG MARIADB_DRIVER_URL="https://repo1.maven.org/maven2/org/mariadb/jdbc/mariadb-java-client/${MARIADB_DRIVER}/mariadb-java-client-${MARIADB_DRIVER}.jar"
