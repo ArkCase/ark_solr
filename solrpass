@@ -1,0 +1,47 @@
+#!/usr/bin/python
+
+import argparse
+import base64
+import hashlib
+import secrets
+
+#
+# For some easy argument validation
+#
+parser = argparse.ArgumentParser(description="Solr Basic Auth Encoder")
+parser.add_argument("password", metavar="password", action="store", help=f"The password to encode", type=str, nargs=1)
+parser.add_argument("salt", metavar="salt", action="store", help=f"The salt to use for the password (in base64 encoding)", type=str, nargs="?")
+
+args = parser.parse_args()
+
+#
+# Grab the password to encode, and turn it into bytes
+#
+password = args.password[0].encode("UTF-8")
+
+#
+# Grab or generate the salt, as needed
+#
+if args.salt:
+	try:
+		salt = base64.b64decode(args.salt.encode("ASCII"))
+	except Exception as e:
+		print(f"Failed to decode the salt value [{args.salt}] as a base64 value: {e}")
+		exit(1)
+else:
+	salt = secrets.token_bytes(32)
+
+#
+# Work our magic!!
+#
+hashed = salt + password
+hashed = hashlib.sha256(hashed).digest()
+hashed = hashlib.sha256(hashed).digest()
+
+#
+# Spit out the results
+#
+result = base64.b64encode(hashed).decode("ASCII")
+salt = base64.b64encode(salt).decode("ASCII")
+print(f"{result} {salt}")
+exit(0)
