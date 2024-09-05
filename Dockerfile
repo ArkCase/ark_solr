@@ -125,6 +125,9 @@ RUN curl "${SRC}" | tar -xzvf - && \
     chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}" "${DATA_DIR}" && \
     chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}"
 
+COPY --chown=root:root solrpass /usr/local/bin
+RUN chmod a+rx /usr/local/bin/solrpass
+
 #################
 # Configure Solr
 #################
