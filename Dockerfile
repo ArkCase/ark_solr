@@ -18,7 +18,7 @@ ARG OS="linux"
 ARG PKG="solr"
 ARG VER="8.11.4"
 
-ARG SRC="https://www.apache.org/dyn/closer.lua/lucene/solr/${VER}/solr-${VER}.tgz?action=download
+ARG SRC="https://www.apache.org/dyn/closer.lua/lucene/solr/${VER}/solr-${VER}.tgz?action=download"
 ARG CW_VER="1.5.0"
 ARG CW_SRC="https://nexus.armedia.com/repository/arkcase/com/armedia/acm/curator-wrapper/${CW_VER}/curator-wrapper-${CW_VER}-exe.jar"
 ARG MARIADB_DRIVER="3.1.2"
