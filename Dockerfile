@@ -114,7 +114,7 @@ RUN groupadd --system --gid "${APP_GID}" "${APP_GROUP}" && \
 
 WORKDIR "${BASE_DIR}"
 
-RUN curl "${SRC}" | tar -xzvf - && \
+RUN curl -fsSL "${SRC}" | tar -xzvf - && \
     mv "solr-${VER}"/* "${HOME_DIR}" && \
     rmdir "solr-${VER}" && \
     mkdir -p "${DATA_DIR}/logs" && \
