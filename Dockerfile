@@ -17,6 +17,7 @@ ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
 ARG VER="8.11.4"
+ARG JAVA="11"
 
 ARG SRC="https://www.apache.org/dyn/closer.lua/lucene/solr/${VER}/solr-${VER}.tgz?action=download"
 ARG CW_VER="1.5.0"
@@ -35,7 +36,7 @@ ARG POSTGRES_DRIVER="42.5.4"
 ARG POSTGRES_DRIVER_URL="https://repo1.maven.org/maven2/org/postgresql/postgresql/${POSTGRES_DRIVER}/postgresql-${POSTGRES_DRIVER}.jar"
 
 ARG BASE_REGISTRY="${PUBLIC_REGISTRY}"
-ARG BASE_REPO="arkcase/base"
+ARG BASE_REPO="arkcase/base-java"
 ARG BASE_VER="8"
 ARG BASE_VER_PFX=""
 ARG BASE_IMG="${BASE_REGISTRY}/${BASE_REPO}:${BASE_VER_PFX}${BASE_VER}"
@@ -46,6 +47,7 @@ ARG ARCH
 ARG OS
 ARG PKG
 ARG VER
+ARG JAVA
 ARG SRC
 ARG CW_SRC
 ARG APP_UID="2000"
@@ -73,11 +75,11 @@ ARG ORACLE_DRIVER_URL
 ARG POSTGRES_DRIVER
 ARG POSTGRES_DRIVER_URL
 
-RUN yum -y install \
-        java-11-openjdk-devel \
+RUN set-java "${JAVA}" && \
+    yum -y install \
         jq \
         lsof \
-    && \
+      && \
     yum -y clean all
 
 LABEL ORG="ArkCase LLC" \
@@ -90,7 +92,6 @@ ENV APP_UID="${APP_UID}" \
     APP_GID="${APP_GID}" \
     APP_USER="${APP_USER}" \
     APP_GROUP="${APP_GROUP}" \
-    JAVA_HOME="/usr/lib/jvm/java" \
     LANG="en_US.UTF-8" \
     LANGUAGE="en_US:en" \
     LC_ALL="en_US.UTF-8" \
