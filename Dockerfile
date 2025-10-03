@@ -150,6 +150,9 @@ RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
 # Install the curator wrapper
 RUN mvn-get "${CW_SRC}" "${CW_REPO}" "/usr/local/bin/curator-wrapper.jar"
 
+COPY --chown=root:root --chmod=0755 CVE /CVE
+RUN apply-fixes /CVE
+
 USER "${APP_USER}"
 WORKDIR "${HOME_DIR}"
 
