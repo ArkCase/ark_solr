@@ -19,8 +19,8 @@ ARG PKG="solr"
 ARG VER="9.9.0"
 ARG JAVA="17"
 
-ARG SRC="https://www.apache.org/dyn/closer.lua/solr/solr/${VER}/solr-${VER}.tgz?action=download"
-ARG SUM="https://www.apache.org/dyn/closer.lua/solr/solr/${VER}/solr-${VER}.tgz.sha512?action=download"
+ARG KEYS="https://downloads.apache.org/solr/KEYS"
+ARG SRC="https://archive.apache.org/dist/solr/solr/${VER}/solr-${VER}.tgz"
 ARG CW_VER="1.7.1"
 ARG CW_SRC="com.armedia.acm:curator-wrapper:${CW_VER}:jar:exe"
 ARG CW_REPO="https://nexus.armedia.com/repository/arkcase"
@@ -40,7 +40,7 @@ ARG POSTGRES_DRIVER_SRC="org.postgresql:postgresql:${POSTGRES_DRIVER}:jar"
 
 ARG BASE_REGISTRY="${PUBLIC_REGISTRY}"
 ARG BASE_REPO="arkcase/base-java"
-ARG BASE_VER="8"
+ARG BASE_VER="22.04"
 ARG BASE_VER_PFX=""
 ARG BASE_IMG="${BASE_REGISTRY}/${BASE_REPO}:${BASE_VER_PFX}${BASE_VER}"
 
@@ -51,8 +51,8 @@ ARG OS
 ARG PKG
 ARG VER
 ARG JAVA
+ARG KEYS
 ARG SRC
-ARG SUM
 ARG APP_UID="2000"
 ARG APP_GID="${APP_UID}"
 ARG APP_USER="${PKG}"
@@ -76,11 +76,10 @@ ARG ORACLE_DRIVER_SRC
 ARG POSTGRES_DRIVER_SRC
 
 RUN set-java "${JAVA}" && \
-    yum -y install \
-        jq \
+    apt-get -y install \
         lsof \
       && \
-    yum -y clean all
+    apt-get clean
 
 LABEL ORG="ArkCase LLC" \
       MAINTAINER="Armedia Devops Team <devops@armedia.com>" \
@@ -118,11 +117,9 @@ WORKDIR "${BASE_DIR}"
 #
 # Install Solr
 #
-RUN curl -fsSL -o "/solr-${VER}.tgz" "${SRC}" && \
-    curl -fsSL -o "/solr.sum" "${SUM}" && \
-    ( cd / && exec sha512sum -c "/solr.sum" ) && \
-    tar --strip-components=1 -C "${HOME_DIR}" -xzvf "/solr-${VER}.tgz" && \
-    rm -rf "/solr-${VER}.tgz" "/solr.sum"
+RUN apache-download "${SRC}" "${KEYS}" "/solr.tar.gz" && \
+    tar --strip-components=1 -C "${HOME_DIR}" -xzvf "/solr.tar.gz" && \
+    rm -rf "/solr.tar.gz"
 
 #
 # Add extra stuff & fix permissions
