@@ -57,13 +57,6 @@ ARG APP_UID="2000"
 ARG APP_GID="${APP_UID}"
 ARG APP_USER="${PKG}"
 ARG APP_GROUP="${APP_USER}"
-ARG BASE_DIR="/app"
-ARG HOME_DIR="${BASE_DIR}/${PKG}"
-ARG DATA_DIR="${BASE_DIR}/data"
-ARG LOGS_DIR="${DATA_DIR}/logs"
-ARG SERVER_DIR="${HOME_DIR}/server"
-ARG WEBAPP_DIR="${SERVER_DIR}/solr-webapp/webapp"
-ARG WEBAPP_LIBS_DIR="${WEBAPP_DIR}/WEB-INF/lib"
 
 ARG CW_SRC
 ARG CW_REPO
@@ -87,21 +80,19 @@ LABEL ORG="ArkCase LLC" \
       VERSION="${VER}" \
       IMAGE_SOURCE="https://github.com/ArkCase/ark_solr"
 
+ENV HOME_DIR="${BASE_DIR}/${PKG}"
+ENV DATA_DIR="${BASE_DIR}/data"
+ENV LOGS_DIR="${DATA_DIR}/logs"
+ENV SERVER_DIR="${HOME_DIR}/server"
+ENV WEBAPP_DIR="${SERVER_DIR}/solr-webapp/webapp"
+ENV WEBAPP_LIBS_DIR="${WEBAPP_DIR}/WEB-INF/lib"
+
 ENV APP_UID="${APP_UID}" \
     APP_GID="${APP_GID}" \
     APP_USER="${APP_USER}" \
-    APP_GROUP="${APP_GROUP}" \
-    LANG="en_US.UTF-8" \
-    LANGUAGE="en_US:en" \
-    LC_ALL="en_US.UTF-8" \
-    BASE_DIR="${BASE_DIR}" \
-    DATA_DIR="${DATA_DIR}" \
-    HOME_DIR="${HOME_DIR}" \
-    PATH="${HOME_DIR}/bin:${PATH}" \
-    SOLR_LOGS_DIR="${LOGS_DIR}" \
-    SERVER_DIR="${SERVER_DIR}" \
-    WEBAPP_DIR="${WEBAPP_DIR}" \
-    WEBAPP_LIBS_DIR="${WEBAPP_LIBS_DIR}"
+    APP_GROUP="${APP_GROUP}"
+ENV PATH="${HOME_DIR}/bin:${PATH}"
+ENV SOLR_LOGS_DIR="${LOGS_DIR}"
 
 WORKDIR "${BASE_DIR}"
 
@@ -146,6 +137,10 @@ RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
 
 # Install the curator wrapper
 RUN mvn-get "${CW_SRC}" "${CW_REPO}" "/usr/local/bin/curator-wrapper.jar"
+
+RUN rm -rf /tmp/* && \
+    chown -R "${APP_USER}:${APP_GROUP}" "${BASE_DIR}" && \
+    chmod -R "u=rwX,g=rX,o=" "${BASE_DIR}"
 
 COPY --chown=root:root --chmod=0755 fix-jar-sum /usr/local/bin/
 COPY --chown=root:root --chmod=0755 CVE /CVE
