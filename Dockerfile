@@ -81,8 +81,6 @@ LABEL ORG="ArkCase LLC" \
       IMAGE_SOURCE="https://github.com/ArkCase/ark_solr"
 
 ENV HOME_DIR="${BASE_DIR}/${PKG}"
-ENV DATA_DIR="${BASE_DIR}/data"
-ENV LOGS_DIR="${DATA_DIR}/logs"
 ENV SERVER_DIR="${HOME_DIR}/server"
 ENV WEBAPP_DIR="${SERVER_DIR}/solr-webapp/webapp"
 ENV WEBAPP_LIBS_DIR="${WEBAPP_DIR}/WEB-INF/lib"
@@ -92,9 +90,8 @@ ENV APP_UID="${APP_UID}" \
     APP_USER="${APP_USER}" \
     APP_GROUP="${APP_GROUP}"
 ENV PATH="${HOME_DIR}/bin:${PATH}"
+ENV LOGS_DIR="${DATA_DIR}/logs"
 ENV SOLR_LOGS_DIR="${LOGS_DIR}"
-
-WORKDIR "${BASE_DIR}"
 
 RUN groupadd --system --gid "${APP_GID}" "${APP_GROUP}" && \
     useradd  --system --uid "${APP_UID}" --gid "${APP_GROUP}" --groups "${ACM_GROUP}" --create-home --home-dir "${HOME_DIR}" "${APP_USER}"
@@ -103,19 +100,17 @@ RUN groupadd --system --gid "${APP_GID}" "${APP_GROUP}" && \
 # Build Solr
 #################
 
-WORKDIR "${BASE_DIR}"
-
 #
 # Install Solr
 #
-RUN apache-download "${SRC}" "${KEYS}" "/solr.tar.gz" && \
+RUN verified-download --keys "${KEYS}" "${SRC}" "/solr.tar.gz" && \
     tar --strip-components=1 -C "${HOME_DIR}" -xzvf "/solr.tar.gz" && \
     rm -rf "/solr.tar.gz"
 
 #
 # Add extra stuff & fix permissions
 #
-RUN mkdir -p "${DATA_DIR}/logs" && \
+RUN mkdir -p "${LOGS_DIR}" && \
     mvn-get "${MYSQL_DRIVER_SRC}" "${WEBAPP_LIBS_DIR}" && \
     mvn-get "${MYSQL_LEGACY_DRIVER_SRC}" "${MYSQL_LEGACY_DRIVER_REPO}" "${WEBAPP_LIBS_DIR}" && \
     mvn-get "${MARIADB_DRIVER_SRC}" "${WEBAPP_LIBS_DIR}" && \
