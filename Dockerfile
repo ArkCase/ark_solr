@@ -21,9 +21,6 @@ ARG JAVA="17"
 
 ARG KEYS="https://downloads.apache.org/solr/KEYS"
 ARG SRC="https://archive.apache.org/dist/solr/solr/${VER}/solr-${VER}.tgz"
-ARG CW_VER="1.7.1"
-ARG CW_SRC="com.armedia.acm:curator-wrapper:${CW_VER}:jar:exe"
-ARG CW_REPO="https://nexus.armedia.com/repository/arkcase"
 ARG MARIADB_DRIVER="3.5.6"
 ARG MARIADB_DRIVER_SRC="org.mariadb.jdbc:mariadb-java-client:${MARIADB_DRIVER}:jar"
 ARG MSSQL_DRIVER="13.2.0.jre11"
@@ -58,8 +55,6 @@ ARG APP_GID="${APP_UID}"
 ARG APP_USER="${PKG}"
 ARG APP_GROUP="${APP_USER}"
 
-ARG CW_SRC
-ARG CW_REPO
 ARG MARIADB_DRIVER_SRC
 ARG MSSQL_DRIVER_SRC
 ARG MYSQL_DRIVER_SRC
@@ -129,9 +124,6 @@ COPY --chown=root:root --chmod=0755 solrpass /usr/local/bin
 ENV CONF_DIR="${SERVER_DIR}/solr/configsets"
 
 RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
-
-# Install the curator wrapper
-RUN mvn-get "${CW_SRC}" "${CW_REPO}" "/usr/local/bin/curator-wrapper.jar"
 
 RUN rm -rf /tmp/* && \
     chown -R "${APP_USER}:${APP_GROUP}" "${BASE_DIR}" && \
