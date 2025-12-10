@@ -16,7 +16,7 @@ ARG PUBLIC_REGISTRY="public.ecr.aws"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
-ARG VER="9.9.0"
+ARG VER="9.10.0"
 ARG JAVA="17"
 
 ARG KEYS="https://downloads.apache.org/solr/KEYS"
