@@ -16,23 +16,23 @@ ARG PUBLIC_REGISTRY="public.ecr.aws"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
-ARG VER="9.10.0"
-ARG JAVA="17"
+ARG VER="8.11.4"
+ARG JAVA="11"
 
-ARG KEYS="https://downloads.apache.org/solr/KEYS"
-ARG SRC="https://archive.apache.org/dist/solr/solr/${VER}/solr-${VER}.tgz"
-ARG MARIADB_DRIVER="3.5.6"
+ARG KEYS="https://downloads.apache.org/lucene/KEYS"
+ARG SRC="https://downloads.apache.org/lucene/solr/${VER}/solr-${VER}.tgz"
+ARG MARIADB_DRIVER="3.1.2"
 ARG MARIADB_DRIVER_SRC="org.mariadb.jdbc:mariadb-java-client:${MARIADB_DRIVER}:jar"
-ARG MSSQL_DRIVER="13.2.0.jre11"
+ARG MSSQL_DRIVER="12.2.0.jre11"
 ARG MSSQL_DRIVER_SRC="com.microsoft.sqlserver:mssql-jdbc:${MSSQL_DRIVER}:jar"
-ARG MYSQL_DRIVER="9.4.0"
+ARG MYSQL_DRIVER="8.0.32"
 ARG MYSQL_DRIVER_SRC="com.mysql:mysql-connector-j:${MYSQL_DRIVER}:jar"
 ARG MYSQL_LEGACY_DRIVER="1.0.0"
 ARG MYSQL_LEGACY_DRIVER_SRC="com.armedia.mysql:mysql-legacy-driver:${MYSQL_LEGACY_DRIVER}:jar"
 ARG MYSQL_LEGACY_DRIVER_REPO="https://nexus.armedia.com/repository/arkcase"
-ARG ORACLE_DRIVER="23.9.0.25.07"
+ARG ORACLE_DRIVER="21.9.0.0"
 ARG ORACLE_DRIVER_SRC="com.oracle.database.jdbc:ojdbc11:${ORACLE_DRIVER}:jar"
-ARG POSTGRES_DRIVER="42.7.8"
+ARG POSTGRES_DRIVER="42.5.4"
 ARG POSTGRES_DRIVER_SRC="org.postgresql:postgresql:${POSTGRES_DRIVER}:jar"
 
 ARG BASE_REGISTRY="${PUBLIC_REGISTRY}"
@@ -128,10 +128,6 @@ RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
 RUN rm -rf /tmp/* && \
     chown -R "${APP_USER}:${APP_GROUP}" "${BASE_DIR}" && \
     chmod -R "u=rwX,g=rX,o=" "${BASE_DIR}"
-
-COPY --chown=root:root --chmod=0755 fix-jar-sum /usr/local/bin/
-COPY --chown=root:root --chmod=0755 CVE /CVE
-RUN apply-fixes /CVE
 
 USER "${APP_USER}"
 WORKDIR "${HOME_DIR}"
