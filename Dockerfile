@@ -16,24 +16,11 @@ ARG PUBLIC_REGISTRY="public.ecr.aws"
 ARG ARCH="amd64"
 ARG OS="linux"
 ARG PKG="solr"
-ARG VER="9.10.1"
-ARG JAVA="17"
+ARG VER="10.0.0"
+ARG JAVA="21"
 
 ARG KEYS="https://downloads.apache.org/solr/KEYS"
 ARG SRC="https://archive.apache.org/dist/solr/solr/${VER}/solr-${VER}.tgz"
-ARG MARIADB_DRIVER="3.5.6"
-ARG MARIADB_DRIVER_SRC="org.mariadb.jdbc:mariadb-java-client:${MARIADB_DRIVER}:jar"
-ARG MSSQL_DRIVER="13.2.1.jre11"
-ARG MSSQL_DRIVER_SRC="com.microsoft.sqlserver:mssql-jdbc:${MSSQL_DRIVER}:jar"
-ARG MYSQL_DRIVER="9.4.0"
-ARG MYSQL_DRIVER_SRC="com.mysql:mysql-connector-j:${MYSQL_DRIVER}:jar"
-ARG MYSQL_LEGACY_DRIVER="1.0.0"
-ARG MYSQL_LEGACY_DRIVER_SRC="com.armedia.mysql:mysql-legacy-driver:${MYSQL_LEGACY_DRIVER}:jar"
-ARG MYSQL_LEGACY_DRIVER_REPO="https://nexus.armedia.com/repository/arkcase"
-ARG ORACLE_DRIVER="23.9.0.25.07"
-ARG ORACLE_DRIVER_SRC="com.oracle.database.jdbc:ojdbc11:${ORACLE_DRIVER}:jar"
-ARG POSTGRES_DRIVER="42.7.8"
-ARG POSTGRES_DRIVER_SRC="org.postgresql:postgresql:${POSTGRES_DRIVER}:jar"
 
 ARG BASE_REGISTRY="${PUBLIC_REGISTRY}"
 ARG BASE_REPO="arkcase/base-java"
@@ -54,14 +41,6 @@ ARG APP_UID="2000"
 ARG APP_GID="${APP_UID}"
 ARG APP_USER="${PKG}"
 ARG APP_GROUP="${APP_USER}"
-
-ARG MARIADB_DRIVER_SRC
-ARG MSSQL_DRIVER_SRC
-ARG MYSQL_DRIVER_SRC
-ARG MYSQL_LEGACY_DRIVER_SRC
-ARG MYSQL_LEGACY_DRIVER_REPO
-ARG ORACLE_DRIVER_SRC
-ARG POSTGRES_DRIVER_SRC
 
 RUN set-java "${JAVA}" && \
     apt-get -y install \
@@ -106,12 +85,6 @@ RUN verified-download --keys "${KEYS}" "${SRC}" "/solr.tar.gz" && \
 # Add extra stuff & fix permissions
 #
 RUN mkdir -p "${LOGS_DIR}" && \
-    mvn-get "${MYSQL_DRIVER_SRC}" "${WEBAPP_LIBS_DIR}" && \
-    mvn-get "${MYSQL_LEGACY_DRIVER_SRC}" "${MYSQL_LEGACY_DRIVER_REPO}" "${WEBAPP_LIBS_DIR}" && \
-    mvn-get "${MARIADB_DRIVER_SRC}" "${WEBAPP_LIBS_DIR}" && \
-    mvn-get "${MSSQL_DRIVER_SRC}" "${WEBAPP_LIBS_DIR}" && \
-    mvn-get "${ORACLE_DRIVER_SRC}" "${WEBAPP_LIBS_DIR}" && \
-    mvn-get "${POSTGRES_DRIVER_SRC}" "${WEBAPP_LIBS_DIR}" && \
     chown -R "${APP_USER}:${APP_GROUP}" "${HOME_DIR}" "${DATA_DIR}" && \
     chmod -R u=rwX,g=rwX,o= "${HOME_DIR}" "${DATA_DIR}"
 
