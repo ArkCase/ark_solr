@@ -100,7 +100,8 @@ RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
 
 RUN rm -rf /tmp/* && \
     chown -R "${APP_USER}:${APP_GROUP}" "${BASE_DIR}" && \
-    chmod -R "u=rwX,g=rX,o=" "${BASE_DIR}"
+    chmod -R "u=rwX,g=rX,o=" "${BASE_DIR}" && \
+    chown root "${HOME_DIR}/bin"
 
 COPY --chown=root:root --chmod=0755 fix-jar-sum /usr/local/bin/
 COPY --chown=root:root --chmod=0755 CVE /CVE
