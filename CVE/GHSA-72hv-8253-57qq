@@ -24,4 +24,5 @@ set_or_default WEBAPP_DIR "${SERVER_DIR}/solr-webapp/webapp"
 set_or_default WEBAPP_LIB_DIR "${WEBAPP_DIR}/WEB-INF/lib"
 
 export CROSS_DC_MANAGER_LIB_DIR WEBAPP_LIB_DIR
+export POST_CALL="fix-jar-sum"
 exec fix-jars "GHSA-72hv-8253-57qq" "2.21.1" "${ARTIFACT_IDS[@]}"
