@@ -95,6 +95,7 @@ COPY --chown=root:root --chmod=0755 solrpass /usr/local/bin
 # Configure Solr
 #################
 
+ENV INIT_DIR="${BASE_DIR}/init"
 ENV CONF_DIR="${SERVER_DIR}/solr/configsets"
 
 RUN rm -rf "${CONF_DIR}/sample_techproducts_configs"
